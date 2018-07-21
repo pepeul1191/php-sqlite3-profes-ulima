@@ -7,5 +7,7 @@
             "email": "jvaldivia@softweb.pe"
         }
     ],
-    "require": {}
+    "require": {
+        "slim/slim": "^3.0"
+    }
 }
