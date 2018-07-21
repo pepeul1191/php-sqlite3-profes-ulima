@@ -1,0 +1,11 @@
+{
+    "name": "pepe/slim",
+    "description": "Simple Slim for Web Pages",
+    "authors": [
+        {
+            "name": "Pepe Valdivia",
+            "email": "jvaldivia@softweb.pe"
+        }
+    ],
+    "require": {}
+}
