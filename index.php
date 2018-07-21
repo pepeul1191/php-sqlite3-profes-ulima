@@ -11,12 +11,44 @@
         $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         return $db;
       },
+      'constants' => [
+        'base_url' => 'http://localhost:8080/',
+        'static_url' => 'http://localhost:8080/public/',]
+      ,
     ]
   ];
-  $c = new \Slim\Container();
+  // Iniciar la aplicación Slim
   $app = new \Slim\App($config);
-
+  // Container para el error 404
+  $container = $app->getContainer();
+  $container['notFoundHandler'] = function ($c) {
+  return function ($request, $response) use ($c) {
+    /**/
+      $method = $request->getMethod();
+      if($method == 'GET'){
+        return $response->withRedirect($c->get('settings')['constants']['base_url'] . 'error/access/404');
+      }else{
+        $rpta = json_encode(
+          [
+            'tipo_mensaje' => 'error',
+            'mensaje' => [
+              'Recurso no disponible',
+              'Error 404'
+            ]
+          ]
+        );
+        return $c['response']
+          ->withStatus(404)
+          ->withHeader('Allow', implode(', ', $methods))
+          ->withHeader('Content-type', 'text/html')
+          ->write($rpta);
+      }
+    };
+  };
   // Define app routes
+  $app->get('/error/access/404', function ($request, $response, $args) {
+    return $response->withStatus(404)->write('Error 404 pe');
+  });
   $app->get('/hello/{name}', function ($request, $response, $args) {
     return $response->write("Hello " . $args['name']);
   });
