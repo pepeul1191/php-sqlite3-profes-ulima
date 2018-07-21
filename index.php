@@ -15,10 +15,14 @@
         'base_url' => 'http://localhost:8080/',
         'static_url' => 'http://localhost:8080/public/',]
       ,
+      'renderer' => [
+        'template_path' => __DIR__,
+      ],
     ]
   ];
-  // Iniciar la aplicación Slim
+  // Iniciar la instancia de la aplicación Slim
   $app = new \Slim\App($config);
+  use Slim\Views\PhpRenderer;
   // Container para el error 404
   $container = $app->getContainer();
   $container['notFoundHandler'] = function ($c) {
@@ -45,14 +49,21 @@
       }
     };
   };
+  $container['renderer'] = function ($c) {
+    $settings = $c->get('settings')['renderer'];
+    return new Slim\Views\PhpRenderer($settings['template_path']);
+  };
   // Define app routes
+  $app->get('/', function ($request, $response, $args) {
+    return $this->renderer->render($response, '/public/index.html');
+  });
   $app->get('/error/access/404', function ($request, $response, $args) {
-    return $response->withStatus(404)->write('Error 404 pe');
+    //return $response->withStatus(404)->write('Error 404 pe');
+    return $this->renderer->render($response, '/public/error404.html');
   });
   $app->get('/hello/{name}', function ($request, $response, $args) {
-    return $response->write("Hello " . $args['name']);
+    return $response->write('Hello ' . $args['name']);
   });
-
   $app->get('/departamento/listar', function ($request, $response, $args) {
     $rpta = '';
     $status = 200;
@@ -72,6 +83,5 @@
     }
     return $response->withStatus($status)->write($rpta);
   });
-
   // Run app
   $app->run();
