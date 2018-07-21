@@ -22,7 +22,6 @@
   ];
   // Iniciar la instancia de la aplicación Slim
   $app = new \Slim\App($config);
-  use Slim\Views\PhpRenderer;
   // Container para el error 404
   $container = $app->getContainer();
   $container['notFoundHandler'] = function ($c) {
