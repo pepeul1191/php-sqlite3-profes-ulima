@@ -89,14 +89,18 @@ $app->get('/teacher/carrer/{carrer_id}', function ($request, $response, $args) {
     $db = call_user_func($this->get('settings')['db']);
     $sql = '
       SELECT T.id AS id, T.names, T.last_names, T.img 
-      FROM teachers T
-      INNER JOIN teachers_carrers TC ON TC.teacher_id = T.id
-      INNER JOIN carrers C ON TC.carrer_id = C.id
-      WHERE TC.carrer_id = ?;
+      FROM teachers T 
+      INNER JOIN teachers_carrers TC ON TC.teacher_id = T.id 
+      INNER JOIN carrers C ON TC.carrer_id = C.id 
+      WHERE TC.carrer_id = :carrer_id 
+      GROUP BY T.id;
     ';
     $stmt = $db->prepare($sql);
-    $stmt->bindParam(1, $args['carrer_id'], PDO::PARAM_INT);
-    $stmt->execute();
+    $stmt->execute(
+      array(
+        ':carrer_id' => intval($args['carrer_id']),
+      )
+    );
     $rpta = json_encode($stmt->fetchAll(PDO::FETCH_ASSOC), JSON_UNESCAPED_UNICODE);
     if($rpta == '[]'){
       $status = 404;
@@ -111,5 +115,42 @@ $app->get('/teacher/carrer/{carrer_id}', function ($request, $response, $args) {
   }
   return $response->withStatus($status)->write($rpta)->withHeader('Content-type', 'text/html');
 });
+$app->get('/teacher/carrer/{carrer_id}/search', function ($request, $response, $args) {
+  $rpta = '';
+  $status = 200;
+  try {
+    $db = call_user_func($this->get('settings')['db']);
+    $sql = '
+      SELECT T.id AS id, T.names, T.last_names, T.img 
+      FROM teachers T 
+      INNER JOIN teachers_carrers TC ON TC.teacher_id = T.id 
+      INNER JOIN carrers C ON TC.carrer_id = C.id 
+      WHERE TC.carrer_id = :carrer_id AND T.names LIKE :names AND T.last_names LIKE :last_names 
+      GROUP BY T.id 
+      ORDER BY T.id;
+    ';
+    $stmt = $db->prepare($sql);
+    $stmt->execute(
+      array(
+        ':carrer_id' => intval($args['carrer_id']),
+        ':names' => '%' . strtoupper($request->getParam('name')) . '%',
+        ':last_names' => '%' . strtoupper($request->getParam('last_name')) . '%'
+      )
+    );
+    $rpta = json_encode($stmt->fetchAll(PDO::FETCH_ASSOC), JSON_UNESCAPED_UNICODE);
+    if($rpta == '[]'){
+      $status = 404;
+      $rpta = 'No se ha encontrado profesores con dicho critero de búsqueda';  
+    }
+  }catch (Exception $e) {
+    $status = 500;
+    $rpta = json_encode(array(
+      'Se ha producido un error en buscar los profesores de la carrera',
+      $e->getMessage()
+    ), JSON_UNESCAPED_UNICODE);
+  }
+  return $response->withStatus($status)->write($rpta)->withHeader('Content-type', 'text/html');
+});
 // Run app
 $app->run();
+
