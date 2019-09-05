@@ -10,5 +10,10 @@
     "require": {
         "slim/slim": "^3.0",
         "slim/php-view": "^2.0"
+    },
+    "scripts": {
+        "dump": "composer dump-autoload -o",
+        "start": "php -S localhost:8080",
+        "test": "phpunit"
     }
 }
