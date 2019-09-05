@@ -23,6 +23,14 @@ $config = [
 ];
 // Iniciar la instancia de la aplicación Slim
 $app = new \Slim\App($config);
+// CORS
+$app->add(function ($req, $res, $next) {
+  $response = $next($req, $res);
+  return $response
+    ->withHeader('Access-Control-Allow-Origin', '*')
+    ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
+    ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+});
 // Container para el error 404
 $container = $app->getContainer();
 $container['notFoundHandler'] = function ($c) {
