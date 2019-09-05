@@ -64,7 +64,7 @@
   $app->get('/hello/{name}', function ($request, $response, $args) {
     return $response->write('Hello ' . $args['name']);
   });
-  $app->get('/carrers/list', function ($request, $response, $args) {
+  $app->get('/carrer/list', function ($request, $response, $args) {
     $rpta = '';
     $status = 200;
     try {
@@ -74,14 +74,41 @@
     	$rpta = json_encode($stmt->fetchAll(PDO::FETCH_ASSOC), JSON_UNESCAPED_UNICODE);
     }catch (Exception $e) {
       $status = 500;
-      $rpta = array(
-        'tipo_mensaje' => 'error',
-        'mensaje' => array('Se ha producido un error en listar las carreras',
-          $e->getMessage()
-        )
-      );
+      $rpta = json_encode(array(
+        'Se ha producido un error en listar las carreras',
+        $e->getMessage()
+      ), JSON_UNESCAPED_UNICODE);
     }
-    return $response->withStatus($status)->write($rpta);
+    return $response->withStatus($status)->write($rpta)->withHeader('Content-type', 'text/html');
+  });
+  $app->get('/teacher/carrer/{carrer_id}', function ($request, $response, $args) {
+    $rpta = '';
+    $status = 200;
+    try {
+      $db = call_user_func($this->get('settings')['db']);
+      $sql = '
+        SELECT T.id AS id, T.names, T.last_names, T.img 
+        FROM teachers T
+        INNER JOIN teachers_carrers TC ON TC.teacher_id = T.id
+        INNER JOIN carrers C ON TC.carrer_id = C.id
+        WHERE TC.carrer_id = ?;
+      ';
+      $stmt = $db->prepare($sql);
+      $stmt->bindParam(1, $args['carrer_id'], PDO::PARAM_INT);
+    	$stmt->execute();
+      $rpta = json_encode($stmt->fetchAll(PDO::FETCH_ASSOC), JSON_UNESCAPED_UNICODE);
+      if($rpta == '[]'){
+        $status = 404;
+        $rpta = 'Carrera no registrada';  
+      }
+    }catch (Exception $e) {
+      $status = 500;
+      $rpta = json_encode(array(
+        'Se ha producido un error en listar los profesores de la carrera',
+        $e->getMessage()
+      ), JSON_UNESCAPED_UNICODE);
+    }
+    return $response->withStatus($status)->write($rpta)->withHeader('Content-type', 'text/html');
   });
   // Run app
   $app->run();
