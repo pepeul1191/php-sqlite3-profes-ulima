@@ -1,0 +1,164 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <script>
+    const BASE_URL = 'http://localhost:8080/';
+  </script>
+  <style type="text/css">
+    .form-btn{
+      padding-top: 30px;
+    }
+    .card-body {
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">Navbar</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Link</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6">
+        <h5>Universidad de Lima, Plana Docente</h5>
+      </div>
+      <div class="col-md-6">
+        <label for="" id="message"></label>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-3">
+        <div class="form-group">
+          <label for="slcCarrers">Carreras</label>
+          <select class="form-control" id="slcCarrers">
+            <option value="E"></option>
+          </select>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="form-group">
+          <label for="txtName">Nombre</label>
+          <input type="text" class="form-control" id="txtName">
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="form-group">
+          <label for="txtLastName">Apellido</label>
+          <input type="text" class="form-control" id="txtLastName">
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="form-group form-btn">
+          <button class="btn btn-success" id="btnSearch">Buscar</button>
+          <button class="btn btn-warning" id="btnClean">Limpiar</button>
+        </div>
+      </div>
+    </div>
+    <div class="row" id="teachers">
+
+    </div>
+  </div>
+    <!-- JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      $.ajax({
+        type: 'GET',
+        url: BASE_URL + 'carrer/list',
+        data: {
+        },
+        headers: {
+        },
+        async: false,
+        success: function(data){
+          var carrers = JSON.parse(data);
+          carrers.forEach(function(carrer){
+            var option = document.createElement('OPTION');
+            option.value = carrer.id;
+            option.innerHTML = carrer.name;
+            document.getElementById('slcCarrers').appendChild(option);
+          });
+        },
+        error: function(xhr, status, error){
+          console.error(error);
+        }
+      });
+    });
+    $('#btnSearch').click(function() {
+      var valCarrer = document.getElementById('slcCarrers').value;
+      if(valCarrer == 'E'){
+        document.getElementById('message').innerHTML = 'Debe seleccionar una carrera';
+      }else{
+        document.getElementById('message').innerHTML = '';
+        while (document.getElementById('teachers').firstChild) {
+          document.getElementById('teachers').removeChild(
+            document.getElementById('teachers').firstChild
+          );
+        }
+        $.ajax({
+          type: 'GET',
+          url: BASE_URL + 'teacher/carrer/' + valCarrer + '/search',
+          data: {
+            name: document.getElementById('txtName').value,
+            last_name: document.getElementById('txtLastName').value,
+          },
+          headers: {
+          },
+          async: false,
+          success: function(data){
+            var teachers = JSON.parse(data);
+            teachers.forEach(function(teacher){
+              var col = document.createElement('DIV');
+              col.classList.add('col-md-3');
+              var card = document.createElement('CARD');
+              var img = document.createElement('IMG');
+              img.classList.add('card-img-top');
+              img.src = teacher.img;
+              img.alt = teacher.last_names + ', ' + teacher.names;
+              var h5 = document.createElement('H5');
+              h5.innerHTML = teacher.last_names;
+              var p = document.createElement('P');
+              p.innerHTML = teacher.names;
+              var cardBody = document.createElement('DIV');
+              cardBody.classList.add('card-body');
+              cardBody.appendChild(h5);
+              cardBody.appendChild(p);
+              card.appendChild(img);
+              card.appendChild(cardBody);
+              col.appendChild(card);
+
+              document.getElementById('teachers').appendChild(col);
+            });
+          },
+          error: function(xhr, status, error){
+            console.error(error);
+          }
+        });
+      }
+    });
+    $('#btnClean').click(function() {
+      $('#txtName').val('');
+      $('#txtLastName').val('');
+      $('#slcCarrers').val('E');
+      $('#teachers').empty();
+    });
+  </script>
+</body>
+</html>

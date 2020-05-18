@@ -19,7 +19,7 @@
             $.ajax({
                 type: 'GET',
                 url: BASE_URL + 'carrer/list',
-                data: { 
+                data: {
                 },
                 headers: {
                 },
@@ -31,12 +31,12 @@
                     console.error(error);
                 }
             });
-        }   
+        }
         function listarProfesCarreras(){
             $.ajax({
                 type: 'GET',
                 url: BASE_URL + 'teacher/carrer/' + $('#carrer_id').val(),
-                data: { 
+                data: {
                 },
                 headers: {
                 },
@@ -48,12 +48,12 @@
                     console.error(error);
                 }
             });
-        }   
+        }
         function buscarProfe(){
             $.ajax({
                 type: 'GET',
                 url: BASE_URL + 'teacher/carrer/' + $('#carrer_id').val() + '/search',
-                data: { 
+                data: {
                     name: $("#names").val(),
                     last_name: $("#last_names").val(),
                 },
@@ -67,7 +67,7 @@
                     console.error(error);
                 }
             });
-        }        
+        }
     </script>
 </body>
 </html>
