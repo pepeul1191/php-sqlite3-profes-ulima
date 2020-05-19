@@ -23,7 +23,8 @@
         $pokemon['peso'],
         $pokemon['altura'],
         str_replace(' ', '',
-          'https://pokefanaticos.com/pokedex/images/pokemon_iconos/' . $pokemon['numero'].' .png'
+          'https://pokefanaticos.com/pokedex/images/pokemon_iconos/' .
+          $pokemon['numero'].' .png'
         ),
       ]);
     }
