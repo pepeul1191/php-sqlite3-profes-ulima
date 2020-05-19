@@ -5,10 +5,10 @@
   https://pokefanaticos.com/pokedex/pokedex_funciones.php?accion=pokemonlistadonumerico
   */
   $pokemons = json_decode(
-    file_get_contents("pokemones.json"),
+    file_get_contents("pokemons.json"),
     true
   );
-  $db = new PDO('sqlite:pokemones.db');
+  $db = new PDO('sqlite:pokemons.db');
   $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
   $db->beginTransaction();
   try {
@@ -17,9 +17,9 @@
         VALUES (?,?,?,?,?,?,?)";
       $db->prepare($sql)->execute([
         $pokemon['numero'],
-        $pokemon['nombre'],
-        $pokemon['tipo_1'],
-        $pokemon['tipo_2'],
+        strtoupper($pokemon['nombre']),
+        strtoupper($pokemon['tipo_1']),
+        strtoupper($pokemon['tipo_2']),
         $pokemon['peso'],
         $pokemon['altura'],
         str_replace(' ', '',

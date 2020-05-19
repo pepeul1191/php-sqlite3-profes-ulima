@@ -12,6 +12,11 @@ $config = [
       $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
       return $db;
     },
+    'db2' =>  function(){
+      $db = new PDO('sqlite:db/pokemons.db');
+      $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+      return $db;
+    },
     'constants' => [
       'base_url' => 'http://localhost:8080/',
       'static_url' => 'http://localhost:8080/public/',]
@@ -73,6 +78,7 @@ $app->get('/error/access/404', function ($request, $response, $args) {
 $app->get('/hello/{name}', function ($request, $response, $args) {
   return $response->write('Hello ' . $args['name']);
 });
+// profes
 $app->get('/carrer/list', function ($request, $response, $args) {
   $rpta = '';
   $status = 200;
@@ -96,11 +102,11 @@ $app->get('/teacher/carrer/{carrer_id}', function ($request, $response, $args) {
   try {
     $db = call_user_func($this->get('settings')['db']);
     $sql = '
-      SELECT T.id AS id, T.names, T.last_names, T.img 
-      FROM teachers T 
-      INNER JOIN teachers_carrers TC ON TC.teacher_id = T.id 
-      INNER JOIN carrers C ON TC.carrer_id = C.id 
-      WHERE TC.carrer_id = :carrer_id 
+      SELECT T.id AS id, T.names, T.last_names, T.img
+      FROM teachers T
+      INNER JOIN teachers_carrers TC ON TC.teacher_id = T.id
+      INNER JOIN carrers C ON TC.carrer_id = C.id
+      WHERE TC.carrer_id = :carrer_id
       GROUP BY T.id;
     ';
     $stmt = $db->prepare($sql);
@@ -112,7 +118,7 @@ $app->get('/teacher/carrer/{carrer_id}', function ($request, $response, $args) {
     $rpta = json_encode($stmt->fetchAll(PDO::FETCH_ASSOC), JSON_UNESCAPED_UNICODE);
     if($rpta == '[]'){
       $status = 404;
-      $rpta = 'Carrera no registrada';  
+      $rpta = 'Carrera no registrada';
     }
   }catch (Exception $e) {
     $status = 500;
@@ -129,12 +135,12 @@ $app->get('/teacher/carrer/{carrer_id}/search', function ($request, $response, $
   try {
     $db = call_user_func($this->get('settings')['db']);
     $sql = '
-      SELECT T.id AS id, T.names, T.last_names, T.img 
-      FROM teachers T 
-      INNER JOIN teachers_carrers TC ON TC.teacher_id = T.id 
-      INNER JOIN carrers C ON TC.carrer_id = C.id 
-      WHERE TC.carrer_id = :carrer_id AND T.names LIKE :names AND T.last_names LIKE :last_names 
-      GROUP BY T.id 
+      SELECT T.id AS id, T.names, T.last_names, T.img
+      FROM teachers T
+      INNER JOIN teachers_carrers TC ON TC.teacher_id = T.id
+      INNER JOIN carrers C ON TC.carrer_id = C.id
+      WHERE TC.carrer_id = :carrer_id AND T.names LIKE :names AND T.last_names LIKE :last_names
+      GROUP BY T.id
       ORDER BY T.id;
     ';
     $stmt = $db->prepare($sql);
@@ -148,7 +154,7 @@ $app->get('/teacher/carrer/{carrer_id}/search', function ($request, $response, $
     $rpta = json_encode($stmt->fetchAll(PDO::FETCH_ASSOC), JSON_UNESCAPED_UNICODE);
     if($rpta == '[]'){
       $status = 404;
-      $rpta = 'No se ha encontrado profesores con dicho critero de búsqueda';  
+      $rpta = 'No se ha encontrado profesores con dicho critero de búsqueda';
     }
   }catch (Exception $e) {
     $status = 500;
@@ -159,6 +165,56 @@ $app->get('/teacher/carrer/{carrer_id}/search', function ($request, $response, $
   }
   return $response->withStatus($status)->write($rpta)->withHeader('Content-type', 'text/html');
 });
+// pokemones
+$app->get('/pokemon/type/list', function ($request, $response, $args) {
+  $rpta = '';
+  $status = 200;
+  try {
+    $db = call_user_func($this->get('settings')['db2']);
+    $stmt = $db->prepare('SELECT type_1 AS type FROM pokemons
+                          GROUP BY (type_1) ORDER BY type;
+                        ');
+    $stmt->execute();
+    $rpta = json_encode($stmt->fetchAll(PDO::FETCH_ASSOC), JSON_UNESCAPED_UNICODE);
+  }catch (Exception $e) {
+    $status = 500;
+    $rpta = json_encode(array(
+      'Se ha producido un error en listar los tipos de pokemones',
+      $e->getMessage()
+    ), JSON_UNESCAPED_UNICODE);
+  }
+  return $response->withStatus($status)->write($rpta)->withHeader('Content-type', 'text/html');
+});
+$app->get('/pokemon/search', function ($request, $response, $args) {
+  $rpta = '';
+  $status = 200;
+  try {
+    $db = call_user_func($this->get('settings')['db2']);
+    $sql = '
+      SELECT * FROM pokemons
+      WHERE (type_1 = :type OR type_2 = :type) AND name LIKE :name
+      ORDER BY number;
+    ';
+    $stmt = $db->prepare($sql);
+    $stmt->execute(
+      array(
+        ':type' => $request->getParam('type'),
+        ':name' => '%' . strtoupper($request->getParam('name')) . '%',
+      )
+    );
+    $rpta = json_encode($stmt->fetchAll(PDO::FETCH_ASSOC), JSON_UNESCAPED_UNICODE);
+    if($rpta == '[]'){
+      $status = 404;
+      $rpta = 'No se ha encontrado pokemones con dicho critero de búsqueda';
+    }
+  }catch (Exception $e) {
+    $status = 500;
+    $rpta = json_encode(array(
+      'Se ha producido un error en buscar los pokemones',
+      $e->getMessage()
+    ), JSON_UNESCAPED_UNICODE);
+  }
+  return $response->withStatus($status)->write($rpta)->withHeader('Content-type', 'text/html');
+});
 // Run app
 $app->run();
-
