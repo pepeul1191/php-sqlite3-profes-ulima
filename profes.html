@@ -59,12 +59,6 @@
         </div>
       </div>
       <div class="col-md-3">
-        <div class="form-group">
-          <label for="txtLastName">Apellido</label>
-          <input type="text" class="form-control" id="txtLastName">
-        </div>
-      </div>
-      <div class="col-md-3">
         <div class="form-group form-btn">
           <button class="btn btn-success" id="btnSearch">Buscar</button>
           <button class="btn btn-warning" id="btnClean">Limpiar</button>
@@ -117,7 +111,6 @@
           url: BASE_URL + 'teacher/carrer/' + valCarrer + '/search',
           data: {
             name: document.getElementById('txtName').value,
-            last_name: document.getElementById('txtLastName').value,
           },
           headers: {
           },

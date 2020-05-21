@@ -139,7 +139,7 @@ $app->get('/teacher/carrer/{carrer_id}/search', function ($request, $response, $
       FROM teachers T
       INNER JOIN teachers_carrers TC ON TC.teacher_id = T.id
       INNER JOIN carrers C ON TC.carrer_id = C.id
-      WHERE TC.carrer_id = :carrer_id AND T.names LIKE :names AND T.last_names LIKE :last_names
+      WHERE TC.carrer_id = :carrer_id AND T.names LIKE :names OR T.last_names LIKE :names
       GROUP BY T.id
       ORDER BY T.id;
     ';
@@ -148,7 +148,6 @@ $app->get('/teacher/carrer/{carrer_id}/search', function ($request, $response, $
       array(
         ':carrer_id' => intval($args['carrer_id']),
         ':names' => '%' . strtoupper($request->getParam('name')) . '%',
-        ':last_names' => '%' . strtoupper($request->getParam('last_name')) . '%'
       )
     );
     $rpta = json_encode($stmt->fetchAll(PDO::FETCH_ASSOC), JSON_UNESCAPED_UNICODE);
