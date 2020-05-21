@@ -37,12 +37,14 @@
   <div class="container">
     <div class="row">
       <div class="col-md-6">
-        <h5>Pokemones</h5>
+        <h5>Examen Parcial - Pokemones</h5>
+        <p>20051191 - José Valdivia Caballero</p>
       </div>
       <div class="col-md-6">
         <label for="" id="message"></label>
       </div>
     </div>
+    <hr>
     <div class="row">
       <div class="col-md-3">
         <div class="form-group">
@@ -130,7 +132,7 @@
               h5.innerHTML = pokemon.name;
               var p = document.createElement('P');
               p.innerHTML = 'Tipos: ' + pokemon.type_1 + ', ' + pokemon.type_2 +
-                '<br> Peso: ' + pokemon.weight + ' kg' + 
+                '<br> Peso: ' + pokemon.weight + ' kg' +
                 '<br> Altura: ' + pokemon.height + ' m';
               var cardBody = document.createElement('DIV');
               cardBody.classList.add('card-body');
