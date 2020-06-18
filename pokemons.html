@@ -62,8 +62,8 @@
       </div>
       <div class="col-md-3">
         <div class="form-group form-btn">
-          <button class="btn btn-success" id="btnSearch">Buscar</button>
-          <button class="btn btn-warning" id="btnClean">Limpiar</button>
+          <button class="btn btn-success" id="btnSearch" onclick="buscar()">Buscar</button>
+          <button class="btn btn-warning" id="btnClean" onclick="limpiar()">Limpiar</button>
         </div>
       </div>
     </div>
@@ -72,54 +72,42 @@
     </div>
   </div>
     <!-- JS -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script>
-    $(document).ready(function() {
-      $.ajax({
-        type: 'GET',
-        url: BASE_URL + 'pokemon/type/list',
-        data: {
-        },
-        headers: {
-        },
-        async: false,
-        success: function(data){
-          var types = JSON.parse(data);
+    window.onload = function() {
+      var xhr = new XMLHttpRequest();
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState == XMLHttpRequest.DONE) {
+          var types = JSON.parse(xhr.responseText);
           types.forEach(function(type){
             var option = document.createElement('OPTION');
             option.value = type.type;
             option.innerHTML = type.type;
             document.getElementById('slcTypes').appendChild(option);
           });
-        },
-        error: function(xhr, status, error){
-          console.error(error);
         }
-      });
-    });
-    $('#btnSearch').click(function() {
+      };
+      xhr.open('GET', BASE_URL + 'pokemon/type/list', false);
+      xhr.send()
+    };
+
+    function buscar(){
+      // validation
       var valType = document.getElementById('slcTypes').value;
       if(valType == 'E'){
         document.getElementById('message').innerHTML = 'Debe seleccionar un tipo de pokemon';
       }else{
-        document.getElementById('message').innerHTML = '';
+        // clean pokemons
         while (document.getElementById('pokemons').firstChild) {
           document.getElementById('pokemons').removeChild(
             document.getElementById('pokemons').firstChild
           );
         }
-        $.ajax({
-          type: 'GET',
-          url: BASE_URL + 'pokemon/search',
-          data: {
-            name: document.getElementById('txtName').value,
-            type: valType,
-          },
-          headers: {
-          },
-          async: false,
-          success: function(data){
-            var pokemons = JSON.parse(data);
+        // AJAX
+        var url = BASE_URL + 'pokemon/search?name=' + document.getElementById('txtName').value + '&type=' + valType;
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function() {
+          if (xhr.readyState == XMLHttpRequest.DONE) {
+            var pokemons = JSON.parse(xhr.responseText);
             pokemons.forEach(function(pokemon){
               var col = document.createElement('DIV');
               col.classList.add('col-md-3');
@@ -141,21 +129,23 @@
               card.appendChild(img);
               card.appendChild(cardBody);
               col.appendChild(card);
-
               document.getElementById('pokemons').appendChild(col);
             });
-          },
-          error: function(xhr, status, error){
-            console.error(error);
           }
-        });
+        }
+        xhr.open('GET', url, true);
+        xhr.send();
       }
-    });
-    $('#btnClean').click(function() {
-      $('#txtName').val('');
-      $('#slcTypes').val('E');
-      $('#pokemons').empty();
-    });
+    };
+    function limpiar(){
+      document.getElementById('txtName').value = '';
+      document.getElementById('slcTypes').value = 'E';
+      while (document.getElementById('pokemons').firstChild) {
+        document.getElementById('pokemons').removeChild(
+          document.getElementById('pokemons').firstChild
+        );
+      }
+    }
   </script>
 </body>
 </html>
