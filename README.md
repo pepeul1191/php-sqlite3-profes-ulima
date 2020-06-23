@@ -19,6 +19,12 @@ Migraciones con DBMATE - profes MySQL:
     $ dbmate -d "db/migrations/profes/mysql" -s "db/profes-mysql-schema.sql" -e "PROFES_MYSQL" up
     $ dbmate -d "db/migrations/profes/mysql" -s "db/profes-mysql-schema.sql" -e "PROFES_MYSQL" rollback
 
+Migraciones con DBMATE - profes Postgres:
+
+    $ dbmate -d "db/migrations/profes/postgres" -s "db/profes-postgres-schema.sql" -e "PROFES_POSTGRES" new <<nombre_de_migracion>>
+    $ dbmate -d "db/migrations/profes/postgres" -s "db/profes-postgres-schema.sql" -e "PROFES_POSTGRES" up
+    $ dbmate -d "db/migrations/profes/postgres" -s "db/profes-postgres-schema.sql" -e "PROFES_POSTGRES" rollback
+
 ---
 
 Fuentes:
@@ -26,3 +32,4 @@ Fuentes:
 + https://stackoverflow.com/questions/43131888/how-to-render-front-end-pages-in-slim-framework-route
 + https://www.slimframework.com/
 + https://github.com/pepeul1191/slimphp-boilerplate
++ https://github.com/pepeul1191/tutoriales/blob/master/Postgres.md
