@@ -35,6 +35,21 @@ CREATE TABLE `schema_migrations` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `teachers`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `teachers` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `names` varchar(40) NOT NULL,
+  `last_names` varchar(40) NOT NULL,
+  `img` varchar(120) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Dumping routines for database 'profes'
 --
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -56,5 +71,6 @@ CREATE TABLE `schema_migrations` (
 LOCK TABLES `schema_migrations` WRITE;
 INSERT INTO `schema_migrations` (version) VALUES
   ('20200623173755'),
-  ('20200623174717');
+  ('20200623174717'),
+  ('20200623200253');
 UNLOCK TABLES;
