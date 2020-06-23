@@ -50,6 +50,24 @@ CREATE TABLE `teachers` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `teachers_carrers`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `teachers_carrers` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `teacher_id` int(11) NOT NULL,
+  `carrer_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `teacher_id` (`teacher_id`),
+  KEY `carrer_id` (`carrer_id`),
+  CONSTRAINT `teachers_carrers_ibfk_1` FOREIGN KEY (`teacher_id`) REFERENCES `teachers` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `teachers_carrers_ibfk_2` FOREIGN KEY (`carrer_id`) REFERENCES `carrers` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=3431 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Dumping routines for database 'profes'
 --
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -73,5 +91,7 @@ INSERT INTO `schema_migrations` (version) VALUES
   ('20200623173755'),
   ('20200623174717'),
   ('20200623200253'),
-  ('20200623200444');
+  ('20200623200444'),
+  ('20200623202625'),
+  ('20200623202635');
 UNLOCK TABLES;
