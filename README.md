@@ -11,6 +11,14 @@ JSON con los todos los profes:
 
     http://localhost:8080/public/profes.json
 
+### Migraciones
+
+Migraciones con DBMATE - profes MySQL:
+
+    $ dbmate -d "db/migrations/profes/mysql" -s "db/migrations/profes/mysql/schema.sql" -e "PROFES_MYSQL" new <<nombre_de_migracion>>
+    $ dbmate -d "db/migrations/profes/mysql" -s "db/migrations/profes/mysql/schema.sql" -e "PROFES_MYSQL" up
+    $ dbmate -d "db/migrations/profes/mysql" -s "db/migrations/profes/mysql/schema.sql" -e "PROFES_MYSQL" rollback
+
 ---
 
 Fuentes:
