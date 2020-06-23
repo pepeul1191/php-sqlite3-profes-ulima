@@ -46,7 +46,7 @@ CREATE TABLE `teachers` (
   `last_names` varchar(40) NOT NULL,
   `img` varchar(120) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1080 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -72,5 +72,6 @@ LOCK TABLES `schema_migrations` WRITE;
 INSERT INTO `schema_migrations` (version) VALUES
   ('20200623173755'),
   ('20200623174717'),
-  ('20200623200253');
+  ('20200623200253'),
+  ('20200623200444');
 UNLOCK TABLES;
