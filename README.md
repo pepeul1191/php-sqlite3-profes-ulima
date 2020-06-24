@@ -37,6 +37,14 @@ Migraciones con DBMATE - pokemons Postgres:
     $ dbmate -d "db/migrations/pokemons/postgres" -s "db/pokemons-postgres-schema.sql" -e "POKEMONS_POSTGRES" up
     $ dbmate -d "db/migrations/pokemons/postgres" -s "db/pokemons-postgres-schema.sql" -e "POKEMONS_POSTGRES" rollback
 
+### Dump y Restore Mysql
+
+    $ mysqldump -u root -p profes > db/profes.sql
+    $ mysql -u root -p profes < db/profes.sql
+
+    $ mysqldump -u root -p pokemons > db/pokemons.sql
+    $ mysql -u root -p pokemons < db/pokemons.sql
+
 ---
 
 Fuentes:
