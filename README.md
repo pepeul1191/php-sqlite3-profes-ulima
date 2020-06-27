@@ -1,4 +1,4 @@
-#One File Slim Bolierplate
+# One File Slim Bolierplate
 
 Instlar dependencias:
 
@@ -44,6 +44,13 @@ Migraciones con DBMATE - pokemons Postgres:
 
     $ mysqldump -u root -p pokemons > db/pokemons.sql
     $ mysql -u root -p pokemons < db/pokemons.sql
+
+
+
+### Dump y Restore Postgres
+
+    $ sudo -u postgres pg_dump local > local.bak
+    $ sudo -u postgres psql local < local.bak
 
 ---
 
